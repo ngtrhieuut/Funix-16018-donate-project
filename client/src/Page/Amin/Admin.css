@@ -1,0 +1,33 @@
+.editBtn {
+    display: flex;
+    align-items: center;
+}
+
+.introduce {
+    display: flex;
+    justify-content: space-between;
+}
+
+.btn-active {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: green solid 0.5px;
+    background-color: green;
+}
+
+.btn-active:hover {
+    box-shadow: 1px 1px 1px 1px green;
+}
+
+.btn-inactive {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: red solid 0.5px;
+    background-color: red;
+}
+
+.btn-inactive:hover {
+    box-shadow: 1px 1px 1px 1px red;
+}
