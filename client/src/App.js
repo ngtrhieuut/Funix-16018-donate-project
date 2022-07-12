@@ -1,45 +1,72 @@
 import "./App.css"
-// import Profile from "./pages/Profile/Profile.jsx";
-import {Routes, Route, Navigate, useLocation} from 'react-router-dom';
-import {useSelector} from 'react-redux';
-import Auth from "./Page/Auth/Auth";
+import axios from "axios";
+import {Routes, Route, Navigate} from 'react-router-dom';
+import {useDispatch, useSelector} from 'react-redux';
 import Home from "./Page/Home/Home";
 import Admin from "./Page/Amin/Admin";
 import DetailPost from "./Components/DetailPost/DetailPost";
-import ConfirmEmail from "./Page/ConfirmEmail/ConfirmEmail";
 import AdminUser from "./Page/Amin/Admin-User";
+import Authentication from "./Page/Auth/Authentication";
+import { useEffect } from "react";
+import { fetchUser, getAUser, logIn } from "./Actions/AuthAction";
 
 function App() {
+  const dispatch = useDispatch()
+  const token = useSelector(state => state.tokenReducer.token)
+  const auth = useSelector((state) => state.authReducer); 
 
-  const location = useLocation();
+  const {isLoggedIn} = auth
 
-  const user = useSelector((state) => state.authReducer.authData);
+  const isAdmin = auth.authData ? auth.authData.isAdmin : false
 
-  // let admin = false;
-  // if (user) {
-  //   admin = user.user.isAdmin;
-  // }
+  useEffect(() => {
+    const LoggedIn = localStorage.getItem('LoggedIn')
+    if(LoggedIn){
+      const getToken = async () => {
+        const res = await axios.post('/user/refresh_token', null)
+        dispatch({type: 'GET_TOKEN', payload: res.data.access_token})
+      }
+      getToken()
+    }
+  },[auth.isLogged, dispatch])
+  
+  useEffect(() => {
+    if(token) {
+      const getUser = () => {
+        dispatch(logIn())
+
+        return fetchUser(token).then(res => {
+          dispatch(getAUser(res))
+        })
+      }
+      getUser()
+    }
+  },[token, dispatch])
+
 
   return (
     <div className="App">
       <Routes>
+        <Route path="/login" element={isLoggedIn ? isAdmin ? <Navigate to="../admin" /> : <Navigate to="../home" /> : <Authentication data={"login"} />} />
+        <Route path="/register" element={isLoggedIn ? isAdmin ? <Navigate to="../admin" /> : <Navigate to="../home" /> : <Authentication data={"register"} />} />
+        <Route path="/user/activate/:token" element={isLoggedIn ? isAdmin ? <Navigate to="../admin" /> : <Navigate to="../home" /> : <Authentication data={"active"} />} />
         <Route 
           path="/" 
-          element={user ? <Navigate to = "auth" /> : <Navigate to = "home" /> } 
+          element={<Navigate to = "../home" />} 
         />
         <Route 
           path="/home"
           element={<Home />}
         /> 
-        <Route path="/auth" element={!user ? <Auth /> : !user.user.activeUser ? <Auth /> : user.user.isAdmin ? <Navigate to = "../admin"/> : <Navigate to = "/home" replace state={{from: location}}/>}/>
-        <Route path="/admin" element={!user ? <Auth /> : user.user.isAdmin ? <Admin /> : <Navigate to="../home" /> } />
+        <Route path="/admin" element={!isLoggedIn ? <Authentication data={"login"} /> : isAdmin ? <Admin /> : <Navigate to="../home" /> } />
         <Route
           path="/post/:postId"
           element={<DetailPost />}
           />
-        <Route path="/auth/post/:postId" element={!user.user.activeUser ? <Auth /> : <DetailPost /> } />
-        <Route path="/auth/:userId/:token" element={user ? !user.user.activeUser ? <ConfirmEmail /> : <Navigate to="../auth" /> : <Navigate to="../auth" /> } />
-        <Route path="/admin-user" element={!user ? <Auth /> : user.user.isAdmin ? <AdminUser /> : <Navigate to="../home" />} />
+        <Route path="/auth/post/:postId" element={!isLoggedIn ? <Authentication data={"login"} /> : <DetailPost /> } />
+        <Route path="/admin-user" element={!isLoggedIn ? <Authentication data={"login"} /> : isAdmin ? <AdminUser /> : <Navigate to="../home" />} />
+        <Route path="/forgot-password" element={!isLoggedIn ? <Authentication data={"forgortpasss"} /> : <Navigate to="../home" />} />
+        <Route path="/user/reset/:token" element={isLoggedIn ? isAdmin ? <Navigate to="../admin" /> : <Navigate to="../home" /> : <Authentication data={"resetpass"} />} />
         <Route
           path="*"
           element={

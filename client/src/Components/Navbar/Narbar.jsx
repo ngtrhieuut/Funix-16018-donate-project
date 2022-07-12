@@ -1,18 +1,25 @@
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { logout } from "../../Actions/AuthAction";
+import axios from "axios";
 
 function Navbar(appName) {
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.authReducer.authData);
+  const auth = useSelector((state) => state.authReducer);
 
-  let admin = false;
-  if (user) {
-    admin = user.user.isAdmin;
-  }
+  const { authData, isLoggedIn } = auth;
 
-  const handleLogOut = (a) => {
-    dispatch(logout());
+  const isAdmin = authData ? authData.isAdmin : false;
+
+  const handleLogOut = async (a) => {
+    dispatch({ type: "DELETE_TOKEN" });
+    dispatch({ type: "LOG_OUT" });
+    try {
+      await axios.get("/user/logout");
+      localStorage.removeItem("LoggedIn");
+      window.location.href = "/";
+    } catch (err) {
+      window.location.href = "/";
+    }
   };
 
   return (
@@ -36,7 +43,7 @@ function Navbar(appName) {
           <span className="navbar-toggler-icon"></span>
         </button>
         <div className="collapse navbar-collapse" id="navbarSupportedContent">
-          {admin ? (
+          {isAdmin ? (
             <ul className="navbar-nav me-auto mb-2 mb-lg-0">
               <li className="nav-item">
                 <Link
@@ -70,9 +77,10 @@ function Navbar(appName) {
             <ul className="navbar-nav me-auto mb-2 mb-lg-0">
               <li className="nav-item">
                 <Link
-                  className="nav-link active fw-bold text-light"
+                  className="nav-link fw-bold text-light"
                   aria-current="page"
                   to="/home"
+                  style={{ textDecoration: "none" }}
                 >
                   Home
                 </Link>
@@ -80,10 +88,10 @@ function Navbar(appName) {
             </ul>
           )}
 
-          {user.user.activeUser ? (
-            <div className="d-flex justifly-content-center">
+          {isLoggedIn ? (
+            <div className="d-flex">
               <p className="border border-primary rounded-3 bg-light p-2 m-1 fw-bold text-primary">
-                {user.user.firstname + " " + user.user.lastname}
+                {authData ? authData.firstname + " " + authData.lastname : ""}
               </p>
               <button
                 className="btn btn-outline-danger m-1 fw-bold bg-light"
@@ -93,12 +101,20 @@ function Navbar(appName) {
               </button>
             </div>
           ) : (
-            <Link
-              to="/auth"
-              className="btn btn-outline-success m-1 fw-bold bg-light"
-            >
-              Login
-            </Link>
+            <div className="d-flex">
+              <Link
+                to="/login"
+                className="btn btn-outline-success m-1 fw-bold bg-light"
+              >
+                Login
+              </Link>
+              <Link
+                to="/register"
+                className="btn btn-outline-info m-1 fw-bold bg-light"
+              >
+                Register
+              </Link>
+            </div>
           )}
         </div>
       </div>

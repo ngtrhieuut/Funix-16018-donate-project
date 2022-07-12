@@ -6,7 +6,7 @@ function ModalEdit(post) {
   const dispatch = useDispatch();
   const [detailPost, setDetailPost] = useState({
     _id: post.post._id,
-    userId: post.user.user._id,
+    userId: post.user._id,
     title: post.post.title,
     desc: post.post.desc,
     image: post.post.image,
@@ -18,10 +18,6 @@ function ModalEdit(post) {
   const handleChange = (e) => {
     setDetailPost({ ...detailPost, [e.target.name]: e.target.value });
   };
-
-  // const handleTimeChange = (e) => {
-  //   setDetailPost({ ...detailPost, [e.target.name]: new Date(e.target.value) });
-  // };
 
   const handlePostChange = (e) => {
     e.preventDefault();

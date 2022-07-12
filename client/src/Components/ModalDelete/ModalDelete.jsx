@@ -1,9 +1,8 @@
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { deletePost } from "../../Actions/PostAction";
 
 function ModalDelete(data) {
   const dispatch = useDispatch();
-  const posts = useSelector((state) => state.postReducer.posts);
 
   const handleDelete = () => {
     dispatch(deletePost(data.post._id, data.index));

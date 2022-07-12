@@ -13,6 +13,7 @@ function Admin() {
   const dispatch = useDispatch();
   const [search, setSearch] = useState("");
   const user = useSelector((state) => state.authReducer.authData);
+
   const posts = useSelector((state) =>
     state.postReducer.posts.filter((post) =>
       post.title.toLowerCase().includes(search.toLowerCase())
@@ -52,14 +53,11 @@ function Admin() {
     } else return donate;
   };
 
-  const handleSearch = () => {
-    console.log(search);
-  };
   useEffect(() => {
     dispatch(getAllPost());
     dispatch(getAllDonate());
     return posts;
-  }, []);
+  }, [dispatch, posts]);
 
   return (
     <div className="Admin">
@@ -73,7 +71,7 @@ function Admin() {
           <h4>
             Admin:{" "}
             <span className="fw-bold">
-              {user.user.firstname + " " + user.user.lastname}
+              {user.firstname + " " + user.lastname}
             </span>
           </h4>
           <button

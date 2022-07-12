@@ -11,4 +11,4 @@ API.interceptors.request.use((req) => {
     return req;
   });
 
-export const getAllUser = () => API.get(`/user`);
+export const getAllUser = () => API.get(`/user/all_infor`);

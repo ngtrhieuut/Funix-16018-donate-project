@@ -9,7 +9,7 @@ function ModalDonate() {
   const user = useSelector((state) => state.authReducer.authData);
 
   const [donateForm, setDonateForm] = useState({
-    userDonateId: user ? user.user._id : "",
+    userDonateId: user ? user._id : "",
     donatePostId: params.postId,
     status: true,
     donate: "",
@@ -52,7 +52,7 @@ function ModalDonate() {
                 type="hidden"
                 className="form-control"
                 name="userDonateId"
-                value={user ? user.user._id : ""}
+                value={user ? user._id : ""}
               />
               <input
                 type="hidden"

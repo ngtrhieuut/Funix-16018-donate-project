@@ -20,7 +20,6 @@ const postReducer = (
       case "UPDATEPOST_START":
         return {...state, uploading: true , error: false}
       case "UPDATEPOST_SUCCESS":
-        console.log(action.data)
         return {...state, posts: state.posts.map(post => post._id === action.data._id ? action.data : post), uploading: false, error: false}
       case "UPDATEPOST_FAIL":
         return {...state, uploading: true, error: true}

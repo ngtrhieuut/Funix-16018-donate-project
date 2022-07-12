@@ -6,7 +6,7 @@ function ModalAddPost() {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.authReducer.authData);
   const [detailPost, setDetailPost] = useState({
-    userId: user.user._id,
+    userId: user._id,
     title: "",
     desc: "",
     image: "",

@@ -4,17 +4,13 @@ import Navbar from "../Navbar/Narbar";
 import dayjs from "dayjs";
 import "./DetailPost.css";
 import ModalDonate from "../ModalDonate/ModalDonate";
-// import { getAllPost } from "../../Actions/PostAction";
-// import { getAllDonate } from "../../Actions/DonateAction";
-// import { useEffect } from "react";
 
 function DetailPost() {
   const params = useParams();
-  // const dispatch = useDispatch();
   const post = useSelector((state) =>
     state.postReducer.posts.find((post) => post._id === params.postId)
   );
-  const user = useSelector((state) => state.authReducer.authData);
+  const isLoggedIn = useSelector((state) => state.authReducer.isLoggedIn);
   const donates = useSelector((state) => state.donateReducer.donates);
 
   const formatter = new Intl.NumberFormat("vi-VN", {
@@ -103,7 +99,7 @@ function DetailPost() {
                 <Link to="/" className="btn btn-outline-success">
                   This event has been completed
                 </Link>
-              ) : user.user.activeUser ? (
+              ) : isLoggedIn ? (
                 <button
                   type="button"
                   className="btn btn-primary"

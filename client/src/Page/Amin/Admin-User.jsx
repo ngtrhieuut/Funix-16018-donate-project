@@ -1,10 +1,17 @@
-import { useSelector } from "react-redux";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllUser } from "../../Actions/UsersAction";
 import Navbar from "../../Components/Navbar/Narbar";
 import "./Admin.css";
 
 function AdminUser() {
+  const dispatch = useDispatch();
+
   const user = useSelector((state) => state.authReducer.authData);
   const { users, loading } = useSelector((state) => state.usersReducer);
+
+  console.log(users);
+
   const doantes = useSelector((state) => state.donateReducer.donates);
   const posts = useSelector((state) => state.postReducer.posts);
 
@@ -23,6 +30,10 @@ function AdminUser() {
     currency: "VND",
     minimumFractionDigits: 0,
   });
+
+  useEffect(() => {
+    dispatch(getAllUser());
+  }, [dispatch]);
   return (
     <div className="AdminUser">
       <Navbar />
@@ -35,7 +46,7 @@ function AdminUser() {
           <h4>
             Admin:{" "}
             <span className="fw-bold">
-              {user.user.firstname + " " + user.user.lastname}
+              {user.firstname + " " + user.lastname}
             </span>
           </h4>
         </div>

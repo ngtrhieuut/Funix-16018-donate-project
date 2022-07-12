@@ -24,7 +24,7 @@ function MainContent() {
   useEffect(() => {
     dispatch(getAllPost());
     return posts;
-  }, []);
+  }, [dispatch, posts]);
   return (
     <div className="MainContent container">
       <h1 className="homeTitle text-center text-primary fw-bold m-4">
