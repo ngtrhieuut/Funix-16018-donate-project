@@ -7,6 +7,8 @@ const router = express.Router();
 
 router.post('/register', userCtrl.register)
 
+router.post('/add-user', userCtrl.addUser)
+
 router.post('/activation', userCtrl.activateEmail)
 
 router.post('/login', userCtrl.login)
@@ -23,7 +25,9 @@ router.get('/all_infor', userCtrl.getUsersAllInfor)
 
 router.get('/logout', userCtrl.logout)
 
-router.patch('/update', auth, userCtrl.updateUser)
+router.patch('/update', userCtrl.updateUser)
+
+router.post('/update-profile', userCtrl.updateProfile)
 
 router.patch('/update_role/:id', auth, authAdmin, userCtrl.updateUsersRole)
 

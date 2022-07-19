@@ -10,9 +10,10 @@ import DonateRoute from "./Routes/DonateRoute.js";
 import CheckRouter from "./Routes/CheckUserRouter.js";
 import path from "path";
 import cookieParser from "cookie-parser";
-
+import {URL} from 'url';
 
 const app = express();
+const __dirname = new URL('.', import.meta.url).pathname
 
 //to serve images for public
 app.use(express.static('public'));
@@ -32,6 +33,7 @@ if(process.env.NODE_ENV === 'production'){
     })
 }
 
+
 mongoose
     .connect(
         process.env.MONGO_DB, {
@@ -39,12 +41,13 @@ mongoose
             useUnifiedTopology: true
         }
     )
-    .then(() => app.listen(
-        process.env.PORT, 
-        () => console.log('App listening at port', process.env.PORT)
-        )
-    )
+    .then(result => {
+        app.listen(process.env.PORT || 8000, '0.0.0.0', () => { //deploy heroku with ip '0.0.0.0'
+            console.log('Server is running at PORT ', process.env.PORT);
+        })
+    })
     .catch(err => console.log(err));
+
 
 //usage of routes
 app.use('/auth', AuthRoute);

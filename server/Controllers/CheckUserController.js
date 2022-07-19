@@ -46,6 +46,37 @@ const userCtrl = {
         }
     },
 
+    //add new User by Admin
+    addUser: async (req, res) => {
+        try {
+            const {username, firstname, lastname, password} = req.body;
+            
+            if(!username || !firstname || !lastname || !password)
+                return res.status(400).json({msg: "Please fill in all fields."})
+
+            if(!validateEmail(username))
+                return res.status(400).json({msg: "Invalid emails."})
+
+            const user = await Users.findOne({username})
+            if(user) return res.status(400).json({msg: "This email already exists."})
+
+            if(password.length < 6)
+                return res.status(400).json({msg: "Password must be at least 6 characters."})
+
+            const passwordHash = await bcrypt.hash(password, 12)
+
+            const newUser = new Users({
+                username, password: passwordHash, firstname, lastname, 
+            });
+
+            newUser.save();
+
+            res.json({msg: "Successfull add new User", user: newUser})
+        } catch (err) {
+            return res.status(500).json({msg: err.message})
+        }
+    },
+
     //active email by mail
     activateEmail: async (req, res) => {
         try {
@@ -178,11 +209,24 @@ const userCtrl = {
     //update user
     updateUser: async (req, res) => {
         try {
-            const {username, firstname, lastname} = req.body
-            await Users.findOneAndUpdate({_id: req.user.id}, {
+            const {_id, username, firstname, lastname, activeUser, isAdmin} = req.body
+            await Users.findOneAndUpdate({_id: _id}, {
+                username, firstname, lastname, activeUser, isAdmin
+            })
+            
+            res.json({msg: "Update Success!"})
+        } catch (err) {
+            return res.status(500).json({msg: err.message})
+        }
+    },
+
+    updateProfile: async (req, res) => {
+        try {
+            const {_id, username, firstname, lastname} = req.body
+            await Users.findOneAndUpdate({_id: _id}, {
                 username, firstname, lastname
             })
-
+            
             res.json({msg: "Update Success!"})
         } catch (err) {
             return res.status(500).json({msg: err.message})

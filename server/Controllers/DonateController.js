@@ -3,8 +3,9 @@ import DonateModel from "../Models/donateModel.js";
 
 //post donate
 export const postDonate = async (req, res) => {
-    const newDonate = new DonateModel(req.body);
-    
+    const {userDonateId, donatePostId, status, donate, donateNote} = req.body;
+    const newDonate = new DonateModel({userDonateId, donatePostId, status, donate, donateNote});
+    console.log(newDonate);
     try {
         await newDonate.save();
         res.status(200).json(newDonate);

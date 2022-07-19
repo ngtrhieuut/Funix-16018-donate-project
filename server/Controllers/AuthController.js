@@ -98,7 +98,6 @@ export const loginUser = async (req, res) => {
 export const postVerifyEmail = async (req, res) => {
     try {
         const user = await UserModel.findById(req.params.userId);
-        // console.log(user);
         if (!user) return res.status(400).send({message: "Invalid Link"});
 
         const token = await tokenModel.findOne({
@@ -108,7 +107,6 @@ export const postVerifyEmail = async (req, res) => {
         if (!token) return res.status(400).send({message: "Invalid Link"});
 
         await user.updateOne({activeUser: true});
-        console.log(user);
         await token.remove();
 
         res.status(200).send({message: "Email verified successfully"})

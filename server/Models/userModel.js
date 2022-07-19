@@ -28,8 +28,8 @@ var UserSchema = new mongoose.Schema(
             default: false
         },
         activeUser: {
-            type: Boolean,
-            default: false
+            type: Number,
+            default: 0
         },
     },
     {timestamps: true}

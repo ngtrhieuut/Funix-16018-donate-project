@@ -9,6 +9,7 @@ var donatePostSchema = new mongoose.Schema({
     donatecost: Number,
     startDate: Date,
     endDate: Date,
+    status: {type: Number, default: 1},
 },  
 {
     timestamps: true
