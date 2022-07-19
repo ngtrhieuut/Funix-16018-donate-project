@@ -9,8 +9,11 @@ import AdminUser from "./Page/Amin/Admin-User";
 import Authentication from "./Page/Auth/Authentication";
 import { useEffect } from "react";
 import { fetchUser, getAUser, logIn } from "./Actions/AuthAction";
+import Profile from "./Page/Profile/Profile";
+import Editor from "./Components/Editor/Editor";
 
 function App() {
+
   const dispatch = useDispatch()
   const token = useSelector(state => state.tokenReducer.token)
   const auth = useSelector((state) => state.authReducer); 
@@ -67,6 +70,8 @@ function App() {
         <Route path="/admin-user" element={!isLoggedIn ? <Authentication data={"login"} /> : isAdmin ? <AdminUser /> : <Navigate to="../home" />} />
         <Route path="/forgot-password" element={!isLoggedIn ? <Authentication data={"forgortpasss"} /> : <Navigate to="../home" />} />
         <Route path="/user/reset/:token" element={isLoggedIn ? isAdmin ? <Navigate to="../admin" /> : <Navigate to="../home" /> : <Authentication data={"resetpass"} />} />
+        <Route path="/editor" element={<Editor />} />
+        <Route path="/profile" element={!isLoggedIn ? <Authentication data={"login"} /> : <Profile />} />
         <Route
           path="*"
           element={

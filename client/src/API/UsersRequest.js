@@ -12,3 +12,4 @@ API.interceptors.request.use((req) => {
   });
 
 export const getAllUser = () => API.get(`/user/all_infor`);
+export const editUser = (data) => API.patch('/user/update', data);

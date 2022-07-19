@@ -72,6 +72,15 @@ function Navbar(appName) {
                   Home
                 </Link>
               </li>
+              <li className="nav-item">
+                <Link
+                  className="nav-link fw-bold text-light"
+                  aria-current="page"
+                  to="/profile"
+                >
+                  Profile
+                </Link>
+              </li>
             </ul>
           ) : (
             <ul className="navbar-nav me-auto mb-2 mb-lg-0">
@@ -80,9 +89,17 @@ function Navbar(appName) {
                   className="nav-link fw-bold text-light"
                   aria-current="page"
                   to="/home"
-                  style={{ textDecoration: "none" }}
                 >
                   Home
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link
+                  className="nav-link fw-bold text-light"
+                  aria-current="page"
+                  to="/profile"
+                >
+                  Profile
                 </Link>
               </li>
             </ul>

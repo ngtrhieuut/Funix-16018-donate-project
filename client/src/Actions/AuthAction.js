@@ -41,4 +41,4 @@ export const getAUser = (res) => {
             user: res.data,
         }
     }
-}
+};

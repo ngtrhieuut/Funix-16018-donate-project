@@ -3,12 +3,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import { postDonate } from "../../Actions/DonateAction";
 import axios from "axios";
-import { isEmpty } from "../validation/Validation";
+import { isEmpty, isPhoneLength } from "../validation/Validation";
 
-function ModalDonate() {
+function ModalDonateWithoutLogin() {
   const params = useParams();
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.authReducer.authData);
+
   const postName = useSelector((state) =>
     state.postReducer.posts.filter(
       (post) => post._id.toString() === params.postId.toString()
@@ -16,7 +16,8 @@ function ModalDonate() {
   )[0].title;
 
   const [donateForm, setDonateForm] = useState({
-    userDonateId: user ? user._id : "",
+    userDonateId: "",
+    username: "",
     donatePostId: params.postId,
     status: true,
     donate: "",
@@ -40,7 +41,14 @@ function ModalDonate() {
 
     setDonateForm({ ...donateForm, err: "", success: "" });
 
-    if (isEmpty(donateForm.donate))
+    if (isPhoneLength(donateForm.username))
+      return setDonateForm({
+        ...donateForm,
+        err: "Phone number is not valid",
+        success: "",
+      });
+
+    if (isEmpty(donateForm.donate) || isEmpty(donateForm.username))
       return setDonateForm({
         ...donateForm,
         err: "Please fill in donate field!",
@@ -48,9 +56,37 @@ function ModalDonate() {
       });
 
     try {
-      dispatch(postDonate(donateForm));
-      const res = await axios.get("/donate");
-      const newDonateId = res.data[res.data.length - 1]._id;
+      const res = await axios.post("/user/add-user", {
+        username:
+          donateForm.username +
+          (Math.random() * 10000000).toFixed(0) +
+          "@guest.guest",
+        firstname: "guest",
+        lastname: "guest",
+        password: (Math.random() * 10000000).toFixed(0),
+      });
+
+      dispatch({ type: "ADDNEWUSER_SUCCESS", data: res.data.user });
+      const userDonateId = res.data.user._id;
+      console.log(userDonateId);
+      setDonateForm({
+        ...donateForm,
+        userDonateId: userDonateId,
+        err: "",
+        success: "",
+      });
+      console.log(donateForm);
+      dispatch(
+        postDonate({
+          userDonateId: userDonateId,
+          donatePostId: donateForm.donatePostId,
+          status: true,
+          donate: donateForm.donate,
+          donateNote: donateForm.donateNote,
+        })
+      );
+      const getAllDonate = await axios.get("/donate");
+      const newDonateId = getAllDonate.data[getAllDonate.data.length - 1]._id;
       setDonateForm({
         ...donateForm,
         err: "",
@@ -59,14 +95,19 @@ function ModalDonate() {
         )} to ${postName}. Your donation code is: ${newDonateId}. Admin will process and respond via email to you within 24 hours`,
       });
     } catch (err) {
-      console.log(err);
+      err.response.data.msg &&
+        setDonateForm({
+          ...donateForm,
+          err: err.response.data.msg,
+          success: "",
+        });
     }
   };
 
   return (
     <div
       className="modal fade"
-      id={"donate" + params.postId}
+      id={"donateWithouLogin" + params.postId}
       tabIndex="-1"
       aria-labelledby="exampleModalLabel"
       aria-hidden="true"
@@ -86,18 +127,18 @@ function ModalDonate() {
           </div>
           <div className="modal-body">
             <form className="d-flex flex-column" onSubmit={handleDonateSubmit}>
-              <input
-                type="hidden"
-                className="form-control"
-                name="userDonateId"
-                value={user ? user._id : ""}
-              />
-              <input
-                type="hidden"
-                className="form-control"
-                name="donatePostId"
-                value={params.postId}
-              />
+              <div className="mb-3">
+                <label htmlFor="username" className="form-label">
+                  Phone Number
+                </label>
+                <input
+                  type="number"
+                  className="form-control"
+                  id="username"
+                  name="username"
+                  onChange={handleChange}
+                />
+              </div>
               <div className="mb-3">
                 <label htmlFor="donateValue" className="form-label">
                   Donate value
@@ -147,4 +188,4 @@ function ModalDonate() {
   );
 }
 
-export default ModalDonate;
+export default ModalDonateWithoutLogin;

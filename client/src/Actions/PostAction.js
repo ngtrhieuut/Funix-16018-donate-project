@@ -32,11 +32,11 @@ export const uploadPost = (data) => async (dispatch) => {
   }
 };
 
-export const deletePost = (id, index) => async (dispatch) => {
+export const deletePost = (id) => async (dispatch) => {
   dispatch({type: "DELETEPOST_START"});
   try {
     await PostsApi.deletePost(id);
-    const data = {id: id , index: index};
+    const data = {id: id};
     dispatch({type: "DELETEPOST_SUCCESS", data: data});
   } catch (error) {
     dispatch({type: "DELETEPOST_FAIL"})

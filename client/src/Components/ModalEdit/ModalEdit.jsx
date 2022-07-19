@@ -1,8 +1,15 @@
-import { useState } from "react";
+import dayjs from "dayjs";
+import { useState, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { updatePost } from "../../Actions/PostAction";
+import JoditEditor from "jodit-react";
+
+const config = {
+  buttons: ["bold", "italic", "link", "unlink", "underline", "source"],
+};
 
 function ModalEdit(post) {
+  const editor = useRef(null);
   const dispatch = useDispatch();
   const [detailPost, setDetailPost] = useState({
     _id: post.post._id,
@@ -13,6 +20,7 @@ function ModalEdit(post) {
     donatecost: post.post.donatecost,
     startDate: post.post.startDate,
     endDate: post.post.endDate,
+    status: post.post.status,
   });
 
   const handleChange = (e) => {
@@ -27,12 +35,12 @@ function ModalEdit(post) {
   return (
     <div
       className="modal fade"
-      id={"post" + post.index}
+      id={"post" + detailPost._id}
       tabIndex="-1"
       aria-labelledby="exampleModalLabel"
       aria-hidden="true"
     >
-      <div className="modal-dialog">
+      <div className="modal-dialog modal-xl">
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title" id="exampleModalLabel">
@@ -70,14 +78,23 @@ function ModalEdit(post) {
                 <label htmlFor="postDesc" className="form-label">
                   Description
                 </label>
-                <textarea
+                <JoditEditor
+                  ref={editor}
+                  value={detailPost.desc}
+                  name="desc"
+                  config={config}
+                  tabIndex={1}
+                  //   onBlur={(newContent) => getValue(newContent)}
+                  onChange={(e) => setDetailPost({ ...detailPost, desc: e })}
+                />
+                {/* <textarea
                   type="text"
                   className="form-control"
                   id="postDesc"
                   name="desc"
                   onChange={(e) => handleChange(e)}
                   value={detailPost.desc}
-                />
+                /> */}
               </div>
               <div className="mb-3">
                 <label htmlFor="postImg" className="form-label">
@@ -115,7 +132,9 @@ function ModalEdit(post) {
                   id="postStartDate"
                   name="startDate"
                   onChange={(e) => handleChange(e)}
-                  value={detailPost.startDate}
+                  value={dayjs(new Date(detailPost.startDate)).format(
+                    "YYYY-MM-DD"
+                  )}
                 />
               </div>
               <div className="mb-3">
@@ -128,8 +147,98 @@ function ModalEdit(post) {
                   id="postEndDate"
                   name="endDate"
                   onChange={(e) => handleChange(e)}
-                  value={detailPost.endDate}
+                  value={dayjs(new Date(detailPost.endDate)).format(
+                    "YYYY-MM-DD"
+                  )}
                 />
+              </div>
+              {/* status update */}
+              <p className="fw-bold">
+                Post status:{" "}
+                {detailPost.status.toString() === "0"
+                  ? "Inactive"
+                  : detailPost.status.toString() === "1"
+                  ? "Active"
+                  : detailPost.status.toString() === "2"
+                  ? "Pending"
+                  : "Deleted"}
+              </p>
+              <div className="mb-3 d-flex justify-content-between">
+                {/* Inactive */}
+                <div className="d-flex flex-column align-items-center">
+                  <label
+                    htmlFor={detailPost._id + "activePost1"}
+                    className="form-label"
+                  >
+                    Inactive
+                  </label>
+                  <input
+                    type="radio"
+                    className="form-control checked-radio-Inactive"
+                    id={detailPost._id + "activePost1"}
+                    name="status"
+                    onChange={(e) => handleChange(e)}
+                    value={0}
+                    style={{ width: "3px", height: "3px" }}
+                  />
+                </div>
+
+                {/* Active */}
+                <div className="d-flex flex-column align-items-center">
+                  <label
+                    htmlFor={detailPost._id + "activePost2"}
+                    className="form-label"
+                  >
+                    Active
+                  </label>
+                  <input
+                    type="radio"
+                    className="form-control checked-radio-Active"
+                    id={detailPost._id + "activePost2"}
+                    name="status"
+                    onChange={(e) => handleChange(e)}
+                    value={1}
+                    style={{ width: "3px", height: "3px" }}
+                  />
+                </div>
+
+                {/* Denied User */}
+                <div className="d-flex flex-column align-items-center">
+                  <label
+                    htmlFor={detailPost._id + "activePost3"}
+                    className="form-label"
+                  >
+                    Pending
+                  </label>
+                  <input
+                    type="radio"
+                    className="form-control checked-radio-Denied"
+                    id={detailPost._id + "activePost3"}
+                    name="status"
+                    onChange={(e) => handleChange(e)}
+                    value={2}
+                    style={{ width: "3px", height: "3px" }}
+                  />
+                </div>
+
+                {/* Delete User */}
+                <div className="d-flex flex-column align-items-center">
+                  <label
+                    htmlFor={detailPost._id + "activePost4"}
+                    className="form-label"
+                  >
+                    Delete
+                  </label>
+                  <input
+                    type="radio"
+                    className="form-control checked-radio-Delete"
+                    id={detailPost._id + "activePost4"}
+                    name="status"
+                    onChange={(e) => handleChange(e)}
+                    value={3}
+                    style={{ width: "3px", height: "3px" }}
+                  />
+                </div>
               </div>
               <button
                 type="submit"

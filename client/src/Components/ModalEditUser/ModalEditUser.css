@@ -1,0 +1,31 @@
+.checked-radio-Inactive:hover {
+    background-color: purple;
+}
+
+.checked-radio-Inactive:checked {
+    background-color: purple;
+}
+
+.checked-radio-Active:hover {
+    background-color: green;
+}
+
+.checked-radio-Active:checked {
+    background-color: green;
+}
+
+.checked-radio-Denied:hover {
+    background-color: yellow;
+}
+
+.checked-radio-Denied:checked {
+    background-color: yellow;
+}
+
+.checked-radio-Delete:hover {
+    background-color: red;
+}
+
+.checked-radio-Delete:checked {
+    background-color: red;
+}

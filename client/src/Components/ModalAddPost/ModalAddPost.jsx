@@ -1,6 +1,13 @@
-import { useState } from "react";
+import dayjs from "dayjs";
+import { useState, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { uploadPost } from "../../Actions/PostAction";
+import { isEmpty } from "../validation/Validation";
+import JoditEditor from "jodit-react";
+
+const config = {
+  buttons: ["bold", "italic", "link", "unlink", "underline", "source"],
+};
 
 function ModalAddPost() {
   const dispatch = useDispatch();
@@ -13,7 +20,11 @@ function ModalAddPost() {
     donatecost: "",
     startDate: "",
     endDate: "",
+    err: "",
+    success: "",
   });
+
+  const editor = useRef(null);
 
   const handleChange = (e) => {
     setDetailPost({ ...detailPost, [e.target.name]: e.target.value });
@@ -21,6 +32,40 @@ function ModalAddPost() {
 
   const handleAddPost = (e) => {
     e.preventDefault();
+
+    setDetailPost({ ...detailPost, err: "", success: "" });
+
+    console.log(detailPost);
+
+    if (
+      isEmpty(detailPost.title) ||
+      isEmpty(detailPost.desc) ||
+      isEmpty(detailPost.image) ||
+      isEmpty(detailPost.donatecost) ||
+      isEmpty(detailPost.startDate) ||
+      isEmpty(detailPost.endDate)
+    )
+      return setDetailPost({
+        ...detailPost,
+        err: "Please add all fields",
+        success: "",
+      });
+
+    if (new Date(detailPost.startDate) < new Date())
+      return setDetailPost({
+        ...detailPost,
+        err: "The start date must be greater than this date",
+        success: "",
+      });
+
+    if (detailPost.startDate >= detailPost.endDate)
+      return setDetailPost({
+        ...detailPost,
+        err: "The end date must be greater than the start date",
+        success: "",
+      });
+
+    setDetailPost({ ...detailPost, err: "", success: "New post was created" });
     dispatch(uploadPost(detailPost));
   };
 
@@ -32,11 +77,11 @@ function ModalAddPost() {
       aria-labelledby="exampleModalLabel"
       aria-hidden="true"
     >
-      <div className="modal-dialog">
+      <div className="modal-dialog modal-xl">
         <div className="modal-content">
           <div className="modal-header">
             <h5 className="modal-title" id="exampleModalLabel">
-              Edit Donate Post
+              Add Donate Post
             </h5>
             <button
               type="button"
@@ -64,14 +109,23 @@ function ModalAddPost() {
                 <label htmlFor="postDesc" className="form-label">
                   Description
                 </label>
-                <textarea
+                <JoditEditor
+                  ref={editor}
+                  value={detailPost.desc}
+                  name="desc"
+                  config={config}
+                  tabIndex={1}
+                  //   onBlur={(newContent) => getValue(newContent)}
+                  onChange={(e) => setDetailPost({ ...detailPost, desc: e })}
+                />
+                {/* <textarea
                   type="text"
                   className="form-control"
                   id="postDesc"
                   name="desc"
                   onChange={(e) => handleChange(e)}
                   value={detailPost.desc}
-                />
+                /> */}
               </div>
               <div className="mb-3">
                 <label htmlFor="postImg" className="form-label">
@@ -109,7 +163,9 @@ function ModalAddPost() {
                   id="postStartDate"
                   name="startDate"
                   onChange={(e) => handleChange(e)}
-                  value={detailPost.startDate}
+                  value={dayjs(new Date(detailPost.startDate)).format(
+                    "YYYY-MM-DD"
+                  )}
                 />
               </div>
               <div className="mb-3">
@@ -122,14 +178,14 @@ function ModalAddPost() {
                   id="postEndDate"
                   name="endDate"
                   onChange={(e) => handleChange(e)}
-                  value={detailPost.endDate}
+                  value={dayjs(new Date(detailPost.endDate)).format(
+                    "YYYY-MM-DD"
+                  )}
                 />
               </div>
-              <button
-                type="submit"
-                className="btn btn-primary"
-                data-bs-dismiss="modal"
-              >
+              <span className="fw-bold text-danger">{detailPost.err}</span>
+              <span className="fw-bold text-success">{detailPost.success}</span>
+              <button type="submit" className="btn btn-primary mt-3">
                 Submit
               </button>
             </form>

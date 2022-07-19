@@ -4,6 +4,8 @@ import Navbar from "../Navbar/Narbar";
 import dayjs from "dayjs";
 import "./DetailPost.css";
 import ModalDonate from "../ModalDonate/ModalDonate";
+import ModalDonateWithoutLogin from "../ModalDonateWithoutLogin/ModalDonateWithoutLogin";
+import Footer from "../Footer/Footer";
 
 function DetailPost() {
   const params = useParams();
@@ -50,7 +52,10 @@ function DetailPost() {
               style={{ width: "80%" }}
               className="mt-4 mb-4 text-center"
             />
-            <p style={{ textAlign: "justify" }}>{post.desc}</p>
+            <div
+              style={{ textAlign: "justify" }}
+              dangerouslySetInnerHTML={{ __html: post.desc }}
+            ></div>
           </div>
           <div className="m-4" style={{ width: "100%" }}>
             <div className="card cardStyle p-4">
@@ -109,19 +114,31 @@ function DetailPost() {
                   Donate
                 </button>
               ) : (
-                <Link
-                  to={"/auth/post/" + post._id}
-                  className="btn btn-outline-primary"
-                >
-                  Login to Donate
-                </Link>
+                <div className="">
+                  <Link
+                    to={"/auth/post/" + post._id}
+                    className="btn btn-outline-primary"
+                    style={{ width: "100%" }}
+                  >
+                    Login to Donate
+                  </Link>
+                  <button
+                    className="btn btn-outline-danger mt-2"
+                    data-bs-toggle="modal"
+                    data-bs-target={"#donateWithouLogin" + post._id}
+                    style={{ width: "100%" }}
+                  >
+                    Donate without Login
+                  </button>
+                </div>
               )}
-
+              <ModalDonateWithoutLogin />
               <ModalDonate />
             </div>
           </div>
         </div>
       </div>
+      <Footer />
     </div>
   );
 }

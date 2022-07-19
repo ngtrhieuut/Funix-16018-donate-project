@@ -15,6 +15,8 @@ const authReducer = (state = { authData: null, loading: false, error: false, upd
         case "UPDATING_FAIL":
             return {...state, updateLoading: true, error: true}
 
+        case "UPDATEPROFILE_SUCCESS":
+            return {...state, authData: action.data, error: false, loading:false};
         case "GET_USER":
             return {...state, authData: action.payload.user}
   

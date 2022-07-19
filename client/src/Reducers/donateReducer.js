@@ -15,12 +15,6 @@ const donateReducer = (
         return { ...state, donates: action.data, loading: false, error: false };
       case "GETALLDONATES_FAIL":
         return { ...state, loading: false, error: true };
-    //   case "UPDATEPOST_START":
-    //     return {...state, uploading: true , error: false}
-    //   case "UPDATEPOST_SUCCESS":
-    //     return {...state, donates: [...state.donates, ...action.data], uploading: false, error: false}
-    //   case "UPDATEPOST_FAIL":
-    //     return {...state, uploading: true, error: true}
       default:
         return state;
     }

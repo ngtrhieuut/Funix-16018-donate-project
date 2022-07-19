@@ -24,10 +24,34 @@
     width: 20px;
     height: 20px;
     border-radius: 50%;
+    border: purple solid 0.5px;
+    background-color: purple;
+}
+
+.btn-inactive:hover {
+    box-shadow: 1px 1px 1px 1px purple;
+}
+
+.btn-denied {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: yellow solid 0.5px;
+    background-color: yellow;
+} 
+
+.btn-denied:hover {
+    box-shadow: 1px 1px 1px 1px yellow;
+}
+
+.btn-deleted {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
     border: red solid 0.5px;
     background-color: red;
 }
 
-.btn-inactive:hover {
+.btn-deleted :hover {
     box-shadow: 1px 1px 1px 1px red;
 }

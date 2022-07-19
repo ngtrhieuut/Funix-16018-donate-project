@@ -24,8 +24,6 @@ function SignInWithOrtherNetwork() {
         tokenId: response.tokenId,
       });
 
-      console.log(123);
-
       setUser({ ...user, error: "", success: res.data.msg });
       localStorage.setItem("isLoggedIn", true);
 

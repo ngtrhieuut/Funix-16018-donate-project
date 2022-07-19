@@ -5,13 +5,13 @@ function ModalDelete(data) {
   const dispatch = useDispatch();
 
   const handleDelete = () => {
-    dispatch(deletePost(data.post._id, data.index));
+    dispatch(deletePost(data.post._id));
   };
 
   return (
     <div
       className="modal fade"
-      id={"deletePost" + data.index}
+      id={"deletePost" + data.post._id}
       tabIndex="-1"
       aria-labelledby="exampleModalLabel"
       aria-hidden="true"

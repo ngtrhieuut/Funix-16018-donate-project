@@ -14,6 +14,11 @@ export const isLength = password => {
     return false
 }
 
+export const isPhoneLength = password => {
+    if(password.length < 9) return true
+    return false
+}
+
 export const isMatch = (password, cf_password) => {
     if(password === cf_password) return true
     return false
