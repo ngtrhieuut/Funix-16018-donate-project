@@ -54,9 +54,9 @@ function ModalDonate() {
       setDonateForm({
         ...donateForm,
         err: "",
-        success: `Thank you for donating ${formatter.format(
+        success: `<p style="color: green">Thank you for donating ${formatter.format(
           donateForm.donate
-        )} to ${postName}. Your donation code is: ${newDonateId}. Admin will process and respond via email to you within 24 hours`,
+        )} to <br/><b> ${postName}</b>.<br/> Your donation code is: <b>${newDonateId}</b>.<br/> Admin will process and respond via email to you within 24 hours`,
       });
     } catch (err) {
       console.log(err);
@@ -124,7 +124,11 @@ function ModalDonate() {
               </div>
 
               <span className="fw-bold text-danger">{donateForm.err}</span>
-              <span className="text-success">{donateForm.success}</span>
+              {/* <span className="text-success">{donateForm.success}</span> */}
+              <div
+                style={{ textAlign: "justify" }}
+                dangerouslySetInnerHTML={{ __html: donateForm.success }}
+              ></div>
 
               <button type="submit" className="btn btn-primary mt-2">
                 Donate
